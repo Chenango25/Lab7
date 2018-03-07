@@ -53,6 +53,10 @@ public class MorseDecoder {
 
         double[] sampleBuffer = new double[BIN_SIZE * inputFile.getNumChannels()];
         for (int binIndex = 0; binIndex < totalBinCount; binIndex++) {
+            int sampleNum = inputFile.readFrames(sampleBuffer, BIN_SIZE);
+            for (int i = 0; i < sampleBuffer.length; i++) {
+                returnBuffer[i] += sampleBuffer[i];
+            }
             // Get the right number of samples from the inputFile
             // Sum all the samples together and store them in the returnBuffer
         }
@@ -81,6 +85,22 @@ public class MorseDecoder {
          * There are four conditions to handle. Symbols should only be output when you see
          * transitions. You will also have to store how much power or silence you have seen.
          */
+        int count = 0;
+        String temp = "";
+        for (int i = 0; i < powerMeasurements.length; i++) {
+            if (powerMeasurements[i] > POWER_THRESHOLD) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        if (count > DASH_BIN_COUNT) {
+            temp = "-";
+        } else {
+            temp = ".";
+        }
+
+        //ispower if current >powershreshold,  waspoer if last >powershreshold
 
         // if ispower and waspower
         // else if ispower and not waspower
